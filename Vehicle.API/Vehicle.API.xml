@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Vehicle.API</name>
+    </assembly>
+    <members>
+        <member name="M:Vehicle.API.Controllers.BusesController.GetAllBuses">
+            <summary>
+            Returns the buses arrays
+            </summary>
+            <returns>Buses collections</returns>        
+        </member>
+    </members>
+</doc>

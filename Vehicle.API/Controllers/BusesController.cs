@@ -13,14 +13,20 @@ namespace Vehicle.API.Controllers
         IBusesRepository _busesRepository;
         public BusesController(IBusesRepository busesRepository)
         {
-            _busesRepository = busesRepository ?? throw new ArgumentException(nameof(IBusesRepository));
-            
+            _busesRepository = busesRepository ?? throw new ArgumentException(nameof(IBusesRepository));            
         }
-        [HttpGet("GetAllBuses")]
+        /// <summary>
+        /// Returns the buses arrays
+        /// </summary>
+        /// <returns>Buses collections</returns>        
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Bus>>> GetAllBuses()
         {
             var buses = await _busesRepository.GetBuses();
             return Ok(buses);
         }
+
+
     }
 }
