@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Vehicle.API.Prrofile;
 using Vehicle.API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<VehicleDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("VehicleDB"));
 });
 
+builder.Services.AddAutoMapper(typeof(BusProfile));
+
 builder.Services.AddSwaggerGen(setupAction =>
 {
     //Addes Title and Description for the API Swagger
@@ -27,7 +30,6 @@ builder.Services.AddSwaggerGen(setupAction =>
     /// addes the comments to swagger methods.also check output of xml in properties setting of the projects
     var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
-
     setupAction.IncludeXmlComments(xmlCommentsFullPath);
 
 });

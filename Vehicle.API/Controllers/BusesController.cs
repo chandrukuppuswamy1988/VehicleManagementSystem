@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Vehicle.API.Entities;
+using Vehicle.API.Models;
 using Vehicle.API.Repository;
 
 namespace Vehicle.API.Controllers
@@ -11,20 +13,26 @@ namespace Vehicle.API.Controllers
     public class BusesController : ControllerBase
     {
         IBusesRepository _busesRepository;
-        public BusesController(IBusesRepository busesRepository)
+        IMapper _mapper;
+        public BusesController(IBusesRepository busesRepository, IMapper mapper)
         {
+            _mapper = mapper;
             _busesRepository = busesRepository ?? throw new ArgumentException(nameof(IBusesRepository));            
         }
+
         /// <summary>
         /// Returns the buses arrays
         /// </summary>
         /// <returns>Buses collections</returns>        
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Bus>>> GetAllBuses()
-        {
+        public async Task<ActionResult<IEnumerable<BusDto>>> GetAllBuses()
+        {            
+
             var buses = await _busesRepository.GetBuses();
-            return Ok(buses);
+            var busDto = _mapper.Map<List<BusDto>>(buses);
+
+            return Ok(busDto);
         }
 
 
