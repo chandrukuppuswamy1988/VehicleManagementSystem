@@ -9,33 +9,70 @@ namespace Vehicle.API.Repository
     {
 
         private readonly VehicleDBContext _context;
-        public BusesRepository(VehicleDBContext context)
+        private readonly ILogger<BusesRepository> _logger;
+        public BusesRepository(VehicleDBContext context, ILogger<BusesRepository> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            this._logger = logger ?? throw new ArgumentNullException(nameof(ILogger<BusesRepository>));
         }
 
         public async Task<IList<Bus>> GetBuses()
         {
-            return await _context.Buses.ToListAsync<Bus>();
+            try
+            {
+                return await _context.Buses.ToListAsync<Bus>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, ex.Message);
+            }
+            return null;
         }
 
         public async Task<PagedList<Bus>> GetBuses(BusesRP busesRP)
         {
 
-            var collection = _context.Buses as IQueryable<Bus>;
-            return await PagedList<Bus>.CreateAsync(collection, busesRP.PageNumber, busesRP.PageSize);
-
+            try
+            {
+                var collection = _context.Buses as IQueryable<Bus>;
+                return await PagedList<Bus>.CreateAsync(collection, busesRP.PageNumber, busesRP.PageSize);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, ex.Message);
+            }
+            return null;
         }
         public async Task<Bus> GetBus(int id)
         {
-            return await _context.Buses.Where(p => p.Id == id).FirstOrDefaultAsync();
+            try
+            {
+                return await _context.Buses.Where(p => p.Id == id).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, ex.Message);
+            }
+            return null;
+
         }
         public async Task<Bus> AddBus(Bus bus)
         {
-            await _context.Buses.AddAsync(bus);
-            _context.SaveChanges();
+            try
+            {
 
-            return bus;
+                await _context.Buses.AddAsync(bus);
+                _context.SaveChanges();
+
+                return bus;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, ex.Message);
+            }
+
+            return null;
         }
 
     }

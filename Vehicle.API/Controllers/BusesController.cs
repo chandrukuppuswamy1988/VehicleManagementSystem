@@ -16,10 +16,14 @@ namespace Vehicle.API.Controllers
     {
         IBusesRepository _busesRepository;
         IMapper _mapper;
-        public BusesController(IBusesRepository busesRepository, IMapper mapper)
+        ILogger<BusesRepository> _logger;
+
+        public BusesController(IBusesRepository busesRepository, IMapper mapper, ILogger<BusesRepository> logger)
         {
             _mapper = mapper;
-            _busesRepository = busesRepository ?? throw new ArgumentException(nameof(IBusesRepository));            
+            _busesRepository = busesRepository ?? throw new ArgumentException(nameof(IBusesRepository));
+            _logger = logger;
+
         }
 
         /// <summary>
@@ -29,8 +33,8 @@ namespace Vehicle.API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<BusDto>>> GetAllBuses()
-        {            
-
+        {
+            _logger.LogInformation("Getting all the buses without Query"); // can be seen in local splunk
             var buses = await _busesRepository.GetBuses();
             var busDto = _mapper.Map<List<BusDto>>(buses);
 
@@ -64,6 +68,8 @@ namespace Vehicle.API.Controllers
 
             if (busEntity == null)
             {
+
+                _logger.LogError(string.Format("Bus not exists error thrown {0}",id.ToString())); // can be seen in local splunk
                 return NotFound();
             }
 
@@ -91,8 +97,7 @@ namespace Vehicle.API.Controllers
                 totalPages = busesFromRepo.TotalPages
             };
 
-            Response.Headers.Add("X-Pagination",
-                   JsonSerializer.Serialize(paginationMetadata));
+            Response?.Headers?.Add("X-Pagination",JsonSerializer.Serialize(paginationMetadata));
 
             var busDtos = _mapper.Map<IEnumerable<BusDto>>(busesFromRepo)
                                .ShapeData(busesRP.Fields);

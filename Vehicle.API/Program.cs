@@ -1,11 +1,18 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 using System.Reflection;
 using Vehicle.API.Prrofile;
 using Vehicle.API.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
 
-// Add services to the container.
+
+builder.Logging.AddSerilog(new LoggerConfiguration()
+               // .WriteTo.Console()  // Tell Serilog to write to Console
+                .ReadFrom.Configuration(builder.Configuration)// Loaded Serilog settings
+                .CreateLogger());
 
 builder.Services.AddControllers();
 
@@ -34,6 +41,7 @@ builder.Services.AddSwaggerGen(setupAction =>
 
 });
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,13 +54,11 @@ app.MapControllers();
 
 app.UseSwagger();
 
+
 // This middleware serves the Swagger documentation UI
 app.UseSwaggerUI(c => 
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Vehicle.API");
-
-
 });
-
 
 app.Run();
