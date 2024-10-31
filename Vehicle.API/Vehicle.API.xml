@@ -10,5 +10,19 @@
             </summary>
             <returns>Buses collections</returns>        
         </member>
+        <member name="M:Vehicle.API.Controllers.BusesController.AddBus(Vehicle.API.Models.BusDto)">
+            <summary>
+            Creates the Bus
+            </summary>
+            <param name="busDto"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Vehicle.API.Controllers.BusesController.GetAll(Vehicle.API.Models.BusesRP)">
+            <summary>
+            Get all Buses for UI
+            </summary>
+            <param name="busesRP">gets search result from Query</param>
+            <returns></returns>
+        </member>
     </members>
 </doc>
